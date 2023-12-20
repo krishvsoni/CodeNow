@@ -32,6 +32,13 @@
       white-space: nowrap; /* Prevent line break */
       margin: 0; /* Reset margin */
     }
+
+    /* Styling for the image */
+    #codeNowImage {
+      width: 50px; /* Adjust the width of the image as needed */
+      height: auto; /* Maintain aspect ratio */
+      margin-right: 10px; /* Add spacing between image and text */
+    }
   </style>
   <div>
     <input type="checkbox" class="checkbox" id="checkbox">
@@ -44,7 +51,9 @@
 </head>
 <body>
   <!-- Typing Animation for h1 -->
-  <h1 id="typing-text" class="typing-animation">Welcome To CodeNow 💻 </h1>
+  <h1 id="typing-text" class="typing-animation">
+    <img id="codeNowImage" src="img.png" alt="CodeNow Image"> Welcome to CodeNow 💻 
+  </h1>
 
   <textarea
     name=""
