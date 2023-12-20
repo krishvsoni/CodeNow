@@ -1,60 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="icon.ico" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="icon.ico" />
 
-    <title>CodeNow</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="styles.css" />
-    <style>
-      
-      body {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+  <title>CodeNow</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      .footer {
-        background-color: black;
-        color: white;
-        text-align: center;
-        padding: 5px;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-      }
-    </style>
-    <div>
-      <input type="checkbox" class="checkbox" id="checkbox">
-      <label for="checkbox" class="checkbox-label">
-        <i class="fas fa-moon"></i>
-        <i class="fas fa-sun"></i>
-        <span class="ball"></span>
-      </label>
-    </div>
-  </head>
-  <body>
-    <h1>Welcome To CodeNow 💻 </h1>
+    .footer {
+      background-color: black;
+      color: white;
+      text-align: center;
+      padding: 5px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
 
-    <textarea
-      name=""
-      id=""
-      cols="30"
-      rows="30"
-      placeholder="Share your code now"
-    ></textarea>
-    <script src="./index.js"></script>
-    
-    <br>
-    <br>
+    /* Add animation class for typing effect */
+    .typing-animation {
+      overflow: hidden; /* Hide overflow to create the typing effect */
+      border-right: 0.15em solid orange; /* Cursor effect */
+      white-space: nowrap; /* Prevent line break */
+      margin: 0; /* Reset margin */
+    }
+  </style>
+  <div>
+    <input type="checkbox" class="checkbox" id="checkbox">
+    <label for="checkbox" class="checkbox-label">
+      <i class="fas fa-moon"></i>
+      <i class="fas fa-sun"></i>
+      <span class="ball"></span>
+    </label>
+  </div>
+</head>
+<body>
+  <!-- Typing Animation for h1 -->
+  <h1 id="typing-text" class="typing-animation">Welcome To CodeNow 💻 </h1>
+
+  <textarea
+    name=""
+    id=""
+    cols="30"
+    rows="30"
+    placeholder="Share your code now"
+  ></textarea>
+  <script src="./index.js"></script>
   
-   
+  <br>
+  <br>
 
-    <!-- Footer -->
-    <div class="footer">
-      <p>&copy; KRISH SONI</p>
-    </div>
-  </body>
+  <!-- Footer -->
+  <div class="footer">
+    <p>&copy; KRISH SONI</p>
+  </div>
+
+  <script>
+    // JavaScript to simulate typing effect
+    const typingElement = document.getElementById('typing-text');
+    const textToType = typingElement.innerText;
+    typingElement.innerText = ''; // Clear the text initially
+
+    function typeText(index) {
+      typingElement.innerHTML += textToType.charAt(index);
+      index++;
+
+      // Recursive call for each character with a delay
+      if (index < textToType.length) {
+        setTimeout(() => typeText(index), 100);
+      }
+    }
+
+    // Start typing animation on page load
+    window.onload = function () {
+      typeText(0);
+    };
+  </script>
+</body>
 </html>
