@@ -39,6 +39,10 @@
       height: auto; /* Maintain aspect ratio */
       margin-right: 10px; /* Add spacing between image and text */
     }
+
+    .social-icons a {
+      margin: 0 5px; /* Adjust margin for better spacing */
+    }
   </style>
   <div>
     <input type="checkbox" class="checkbox" id="checkbox">
@@ -56,8 +60,8 @@
   </h1>
 
   <textarea
-    name=""
-    id=""
+    id="codeInput"
+    name="code"
     cols="30"
     rows="30"
     placeholder="Share your code now"
@@ -70,8 +74,13 @@
   <!-- Footer -->
   <div class="footer">
     <p>&copy; KRISH SONI</p>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/krishvsoni/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+      <a href="https://twitter.com/krishvsoni" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+      <a href="https://github.com/krishvsoni" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/krishvsoni/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+    </div>
   </div>
-
   <script>
     // JavaScript to simulate typing effect
     const typingElement = document.getElementById('typing-text');

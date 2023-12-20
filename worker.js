@@ -1,3 +1,5 @@
+// Main thread script (main.js)
+
 const urlParams = new URLSearchParams(location.search);
 
 let roomId = urlParams.get("id");
@@ -9,7 +11,7 @@ if (!roomId) {
 
 const textArea = document.querySelector("textarea");
 
-const wsurl = `wss://us-nyc-1.websocket.me/v3/${roomId}?api_key=OXRCUIAFhl9ip9WXwAlQIIqtakRpe58g2vkd1cKFqHFOX3YgXh36NdtydCup`;
+const wsurl = `wss://s11278.blr1.piesocket.com/v3/${roomId}?api_key=S3GvNW3jI1nwzmx2n6jI4KypXkEbcwsG9DFTBOnL&notify_self=1`;
 
 const socket = new WebSocket(wsurl);
 
