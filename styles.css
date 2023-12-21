@@ -64,7 +64,6 @@ body.dark h1, body.dark .support a {color: #fff;}
 
 
 
-/*  Support me if you like it */
 .support {
 	position: absolute;
 	right: 20px;
@@ -94,3 +93,27 @@ textarea {
   width: 98vw;
   padding: 5px;
 }
+
+
+.code-container {
+  display: flex;
+}
+
+.line-numbers {
+  width: 40px; 
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-right: 1px solid #ddd; 
+}
+
+#lineNumbers {
+  white-space: pre-wrap;
+}
+
+#codeInput {
+  flex: 1;
+  margin-left: 20px
+  margin-right: 10px
+}
+
+

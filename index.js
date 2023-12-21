@@ -73,3 +73,20 @@ broadcastChannel.onmessage = (event) => {
     textArea.value = event.data.code;
   }
 };
+
+function updateLineNumbers() {
+  const codeInput = document.getElementById("codeInput");
+  const lineNumbers = document.getElementById("lineNumbers");
+  const lines = codeInput.value.split("\n");
+  const lineCount = lines.length;
+
+  // Generate line numbers content
+  const lineNumbersContent = Array.from({ length: lineCount }, (_, i) => i + 1).join("\n");
+  lineNumbers.textContent = lineNumbersContent;
+
+  // Synchronize scrolling between line numbers and textarea
+  lineNumbers.scrollTop = codeInput.scrollTop;
+}
+
+// Initial update of line numbers
+updateLineNumbers();

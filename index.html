@@ -59,18 +59,24 @@
   </div>
 </head>
 <body>
-  <!-- Typing Animation for h1 -->
   <h1 id="typing-text" class="typing-animation">
-    <img id="codeNowImage" src="img.png" alt="CodeNow Image"> Welcome to CodeNow 💻 
+     Welcome to CodeNow !!
   </h1>
 
+
+<div class="code-container">
+  <div class="line-numbers" id="lineNumbers"></div>
   <textarea
     id="codeInput"
     name="code"
     cols="30"
     rows="30"
-    placeholder="Share your code now"
+    placeholder="Share your code now 💻"
+    oninput="updateLineNumbers()"
+    onscroll="updateLineNumbers()"
   ></textarea>
+</div>
+
   <script src="./index.js"></script>
   
   <br>
