@@ -15,6 +15,12 @@
       box-sizing: border-box;
     }
 
+
+.social-icons i.white-icon {
+  color: white;
+}
+
+
     .footer {
       background-color: black;
       color: white;
@@ -25,19 +31,18 @@
       width: 100%;
     }
 
-    /* Add animation class for typing effect */
     .typing-animation {
-      overflow: hidden; /* Hide overflow to create the typing effect */
+      overflow: hidden; 
       border-right: 0.15em solid orange; /* Cursor effect */
-      white-space: nowrap; /* Prevent line break */
-      margin: 0; /* Reset margin */
+      white-space: nowrap;
+      margin: 0; 
     }
 
     /* Styling for the image */
     #codeNowImage {
-      width: 50px; /* Adjust the width of the image as needed */
-      height: auto; /* Maintain aspect ratio */
-      margin-right: 10px; /* Add spacing between image and text */
+      width: 50px; 
+      height: auto; 
+      margin-right: 10px; 
     }
 
     .social-icons a {
@@ -71,16 +76,17 @@
   <br>
   <br>
 
- <!-- Footer -->
-  <div class="footer">
-    <p>&copy; KRISH SONI</p>
-    <div class="social-icons">
-      <a href="https://www.instagram.com/krishvsoni/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-      <a href="https://twitter.com/krishvsoni" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-      <a href="https://github.com/krishvsoni" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-      <a href="https://www.linkedin.com/in/krishvsoni/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
-    </div>
+<!-- Footer -->
+<div class="footer">
+  <p>&copy; KRISH SONI</p>
+  <div class="social-icons">
+    <a href="https://www.instagram.com/krishvsoni/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram white-icon"></i></a>
+    <a href="https://twitter.com/krishvsoni" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter white-icon"></i></a>
+    <a href="https://github.com/krishvsoni" target="_blank" rel="noopener noreferrer"><i class="fab fa-github white-icon"></i></a>
+    <a href="https://www.linkedin.com/in/krishvsoni/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin white-icon"></i></a>
   </div>
+</div>
+
   <script>
     // JavaScript to simulate typing effect
     const typingElement = document.getElementById('typing-text');
