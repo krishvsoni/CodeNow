@@ -71,6 +71,25 @@
 
   <script src="https://api.opencagedata.com/geocode/v1/json?key=9c420bc4c89f43269456a20cefbff5c7"></script>
 
-  
+  <script>
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        const opencageUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=9c420bc4c89f43269456a20cefbff5c7`;
+        fetch(opencageUrl)
+          .then(response => response.json())
+          .then(data => {
+            const address = data.results[0].formatted;
+            const locationElement = document.getElementById("location");
+            locationElement.textContent = ` ${address}`;
+          })
+          .catch(error => console.error('Error fetching address:', error));
+      });
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  </script>
 </body>
 </html>
