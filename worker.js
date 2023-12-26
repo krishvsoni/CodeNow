@@ -11,26 +11,29 @@ if (!roomId) {
 
 const textArea = document.querySelector("textarea");
 
-const wsurl = `wss://s11278.blr1.piesocket.com/v3/${roomId}?api_key=S3GvNW3jI1nwzmx2n6jI4KypXkEbcwsG9DFTBOnL&notify_self=1`;
+// Load WebSocket URL from the file
+fetch('/websocket_url.txt')
+  .then(response => response.text())
+  .then(websocketUrl => {
+    const socket = new WebSocket(websocketUrl);
 
-const socket = new WebSocket(wsurl);
+    socket.onopen = () => {};
 
-socket.onopen = () => {};
+    socket.onmessage = (e) => {
+      textArea.value = e.data;
+    };
 
-socket.onmessage = (e) => {
-  // You can handle audio logic here if needed
-  textArea.value = e.data;
-};
+    textArea.addEventListener(
+      "input",
+      debounce((e) => {
+        console.log(e.target.value);
+        socket.send(e.target.value);
+      })
+    );
 
-textArea.addEventListener(
-  "input",
-  debounce((e) => {
-    console.log(e.target.value);
-    socket.send(e.target.value);
+    const checkbox = document.getElementById("checkbox");
+    checkbox.addEventListener("change", () => {
+      document.body.classList.toggle("dark");
+    });
   })
-);
-
-const checkbox = document.getElementById("checkbox");
-checkbox.addEventListener("change", () => {
-  document.body.classList.toggle("dark");
-});
+  .catch(error => console.error('Error loading WebSocket URL:', error));
