@@ -29,6 +29,7 @@ fetch('/websocket_url.txt')
         console.log(e.target.value);
         socket.send(e.target.value);
       })
+      
     );
 
     const checkbox = document.getElementById("checkbox");
