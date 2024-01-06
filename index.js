@@ -1,4 +1,3 @@
-alert("Attention!! CodeNow is under-maintenance, try to refresh if functions don't work");
 const urlParams = new URLSearchParams(location.search);
 let roomId = urlParams.get("id");
 
