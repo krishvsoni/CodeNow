@@ -8,8 +8,9 @@ if (!roomId) {
 
 const textArea = document.querySelector("textarea");
 
-const wsurl = `wss://s11278.blr1.piesocket.com/v3/${roomId}?api_key=S3GvNW3jI1nwzmx2n6jI4KypXkEbcwsG9DFTBOnL&notify_self=1`;
-alert("CodeNow is under maintenance, we will right back soon 🙂");
+//const wsurl = `wss://s11278.blr1.piesocket.com/v3/${roomId}?api_key=S3GvNW3jI1nwzmx2n6jI4KypXkEbcwsG9DFTBOnL&notify_self=1`;
+
+const wsurl = `wss://free.blr2.piesocket.com/v3/1${roomId}?api_key=IEGqMCxfGODlxW8iOcT19tNOaceJxqqnNkv129LO&notify_self=1`
 const socket = new WebSocket(wsurl);
 
 const debounce = (func, timer = 250) => {
