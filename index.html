@@ -8,23 +8,41 @@
   <title>CodeNow - Share & Compile</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
+ 
+
   <style>
     #location {
       margin-bottom: 20px;
     }
+    
   </style>
+
+  
 </head>
 
-<body style="background-color: #292c35;">
-  <div id="location" style="color: white;"></div>
+<body style="background-color: #070708;">
+  <div class="toolbar">
+    <div class="toolbar__center">
+      <iframe
+  src="https://ghbtns.com/github-btn.html?user=krishvsoni&repo=CodeNow&type=star&count=true&size=medium"
+  frameborder="0"
+  scrolling="0"
+  width="170"
+  height="30"
+  title="GitHub"
+  style="float: right;">
+</iframe>
 
+    </div>
+  </div>
   <h1 id="typing-text" class="typing-animation" style="color: white;">
     Welcome to CodeNow !!
   </h1>
-
+  
   <div class="code-container">
     <div class="line-numbers" id="lineNumbers"></div>
     <textarea
+      class="textarea textarea--transparent"
       id="codeInput"
       name="code"
       cols="30"
@@ -36,27 +54,28 @@
   </div>
 
   <br>
-  <a href="https://github.com/piyushsuthar/github-readme-quotes">
-    <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark?border=true" alt="Readme Quotes" />
+  <a href="https://github.com/krishvsoni">
+    <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark?border=true" alt="Dev Quotes" />
 </a>
   <br>
-
-  <iframe
+  <iframe class = "compiler"
     frameBorder="0"
     height="600px"
     src="https://onecompiler.com/embed/"
     width="100%"
   ></iframe>
-
+<
   <script src="./index.js"></script>
 
   <br>
   <br>
 
-  <div class="container" style="--background-color: #292c35; --text-color: white;">
+  <div class="container" style="--background-color: #070708; --text-color: white;">
     <div class="card card-body" style="justify-content: center; background-color: var(--background-color); color: var(--text-color);">
-      <h6 align="center">&copy; KRISH SONI</h6>
-      <div class="social-icons" style="display: flex; justify-content: center; margin-top: 10px;">
+      <h4 align="center">&copy; KRISH SONI</h6>
+      <div id="location" style="color: white;"></div>
+
+      <div class="social-icons" style="display: flex; justify-content: center; margin-top: 20px;">
         <a href="https://twitter.com/krishvsoni" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); margin: 0 10px;">
           <i class="fab fa-twitter"></i>
         </a>
@@ -72,6 +91,9 @@
       </div>
     </div>
   </div>
+
+
+
 
   <script src="https://api.opencagedata.com/geocode/v1/json?key=9c420bc4c89f43269456a20cefbff5c7"></script>
 
