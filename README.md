@@ -1,29 +1,28 @@
 # CodeNow - Share & Compile!
+ https://codenow.vercel.app/
+
 <hr>
 
 
 
 CodeNow, a collaborative coding platform designed to streamline the coding experience. Whether you're collaborating on a project, guiding a colleague, or simply exploring new technologies, CodeNow facilitates seamless code sharing and compilation in real-time.
+## Key Features:
 
-https://codenow.vercel.app/
+- Real-time Collaboration: Share and review code with teammates instantly.
+- Efficient Compilation: Compile and run code within the platform for quick testing and debugging.
+- Programming Wisdom: Gain inspiration with thought-provoking coding quotes.
+- Geolocation Integration: Experience personalized collaboration with automatic location display.
 
-Key Features:
+## Tech Stack:
 
-Real-time Collaboration: Share and review code with teammates instantly.
-Efficient Compilation: Compile and run code within the platform for quick testing and debugging.
-Programming Wisdom: Gain inspiration with thought-provoking coding quotes.
-Geolocation Integration: Experience personalized collaboration with automatic location display.
-
-Technology Stack:
-
-Frontend: HTML, CSS, JavaScript
-Backend: Flask / NodeJS
-Real-time Communication: WebSocket
-Location Integration: OpenCage Geocoding API
+- Frontend: HTML, CSS, JavaScript
+- Backend:  NodeJS
+- Real-time Communication: Pie Socket
+- Location Integration: OpenCage Geocoding API
 
 
 ### Share 🌐
-<img width="1280" alt="image" src="https://github.com/krishvsoni/CodeNow/assets/67964054/5bb50271-5ffb-40fe-a6e9-9cdb353325e5">
+<img width="1236" alt="image" src="https://github.com/krishvsoni/CodeNow/assets/67964054/30b38f42-e448-4842-837c-f38f65ffd895">
 
 ### Compile 💻
-<img width="1269" alt="image" src="https://github.com/krishvsoni/CodeNow/assets/67964054/804345e7-d2b4-4de6-86e8-84c234d2589a">
+<img width="1232" alt="image" src="https://github.com/krishvsoni/CodeNow/assets/67964054/76d7763c-ed7d-4f4b-8459-dff761b71e9f">
