@@ -1,3 +1,5 @@
+alert("CodeNow is undergoing maintenance, and some code sharing may be temporarily unavailable. However, you can still use our integrated compiler. We appreciate your understanding.");
+
 const urlParams = new URLSearchParams(location.search);
 let roomId = urlParams.get("id");
 
