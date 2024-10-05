@@ -1,100 +1,143 @@
-import Image from "next/image";
+'use client';
+import { useState } from "react";
+import { Code, Users, Zap, Globe } from "lucide-react";
+import Link from "next/link";
 
-export default function Home() {
+export default function Component() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [code, setCode] = useState("");
+
+  const handleShareCodeClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCodeSubmit = () => {
+    // handle the code submission logic here
+    console.log("Code entered:", code);
+    handleCloseModal();
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="flex flex-col min-h-screen font-sans bg-gray-950 text-gray-100">
+      <header className="px-4 lg:px-6 h-14 flex items-center">
+        <Link className="flex items-center justify-center" href="/">
+          <Code className="h-6 w-6 mr-2" />
+          <span className="font-bold text-xl">CodeNow</span>
+        </Link>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main className="flex-1 flex flex-col justify-center items-center">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 flex justify-center items-center">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+                  Code Together, Anywhere, Anytime
+                </h1>
+                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
+                  CodeNow is the realtime code sharing platform that brings developers together. Collaborate, learn, and create in perfect sync.
+                </p>
+              </div>
+              <div className="space-x-4">
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+                  onClick={handleShareCodeClick}
+                >
+                  Share Your Code Now
+                </button>
+                <button className="px-4 py-2 border border-gray-700 text-white font-medium rounded hover:bg-gray-800">
+                  Github Repository
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Modal for entering code */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
+              <h2 className="text-2xl font-bold text-white mb-4">Enter Your Code</h2>
+              <input
+                type="text"
+                className="w-full px-3 py-2 bg-gray-700 text-white rounded mb-4"
+                placeholder="Enter code here..."
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <div className="flex justify-end space-x-2">
+                <button
+                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                  onClick={handleCloseModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={handleCodeSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 flex justify-center items-center">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <Zap className="h-10 w-10 text-blue-500" />
+                <h2 className="text-xl font-bold">Realtime Collaboration</h2>
+                <p className="text-gray-400">Code together in real-time with your team, no matter where they are in the world.</p>
+              </div>
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <Globe className="h-10 w-10 text-green-500" />
+                <h2 className="text-xl font-bold">Multi-language Support</h2>
+                <p className="text-gray-400">From Python to JavaScript, CodeNow supports all major programming languages.</p>
+              </div>
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <Users className="h-10 w-10 text-purple-500" />
+                <h2 className="text-xl font-bold">Team Management</h2>
+                <p className="text-gray-400">Easily manage your team, projects, and permissions all in one place.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">For Inquiries</h2>
+                <p className="mx-auto max-w-[600px] text-gray-400 md:text-xl">
+                  Have a question or need help? Contact us at{" "}
+                  <a href="mailto:" className="text-blue-500 hover:underline" />
+                </p>
+              </div>
+              <div className="w-full max-w-sm space-y-2">
+                <form className="flex space-x-2">
+                  <input
+                    className="max-w-lg flex-1 bg-gray-800 text-white px-4 py-2 rounded placeholder-gray-400"
+                    placeholder="Enter your email"
+                    type="email"
+                  />
+                  <button className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600" type="submit">
+                    Send
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
+        <p className="text-xs text-gray-400">© 2024 CodeNow. All rights reserved.</p>
       </footer>
     </div>
   );
