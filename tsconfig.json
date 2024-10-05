@@ -1,26 +1,42 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ], // Keeps the necessary DOM types
+    "allowJs": true, // Allows JavaScript files to be compiled
+    "skipLibCheck": true, // Skips type checking of declaration files
+    "strict": true, // Enables strict type checking options
+    "noEmit": true, // Prevents TypeScript from emitting compiled JavaScript files
+    "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES modules
+    "module": "ESNext", // Use ESNext module syntax
+    "moduleResolution": "Node", // Resolves modules using Node's module resolution strategy
+    "resolveJsonModule": true, // Allows importing JSON files
+    "isolatedModules": true, // Ensures that each file can be transpiled independently
+    "jsx": "preserve", // Preserves JSX syntax in the output
+    "incremental": true, // Enables incremental compilation for faster builds
+    "paths": {
+      "@/*": [
+        "./*"
+      ] // Alias configuration for absolute imports
+    },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./*"]
-    }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/**/*.ts" // Include your websocket server TypeScript file
+    ,
+    "app/lib/websocketServer.ts"
+  ],
+  "exclude": [
+    "node_modules" // Excludes node_modules from compilation
+  ]
 }

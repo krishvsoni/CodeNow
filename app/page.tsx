@@ -2,10 +2,12 @@
 import { useState } from "react";
 import { Code, Users, Zap, Globe } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [code, setCode] = useState("");
+  const router = useRouter(); // Initialize router
 
   const handleShareCodeClick = () => {
     setIsModalOpen(true);
@@ -16,10 +18,12 @@ export default function Component() {
   };
 
   const handleCodeSubmit = () => {
-    // handle the code submission logic here
-    console.log("Code entered:", code);
+    console.log('code entered', code);
+    router.push(`/${code}`);
     handleCloseModal();
   };
+
+  
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gray-950 text-gray-100">
