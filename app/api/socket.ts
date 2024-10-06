@@ -13,7 +13,7 @@ let io: Server | null = null;
 let connectedClientsCount = 0; // Track number of connected clients
 
 export default function socketHandler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
+  if (req.method === 'GET','POST',"OPTIONS",'PUT','DELETE') {
     const socket = res.socket as any;
 
     if (!socket || !socket.server) {
