@@ -1,12 +1,12 @@
-"use client";
-
+'use client';
 import { useState, useEffect, useRef } from 'react';
 import { Code, Copy, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { io } from 'socket.io-client';
+import debounce from 'lodash.debounce'; // Install lodash.debounce
 
-const socket = io('http://localhost:3001'); // Connect to your Socket.IO server
+const socket = io('http://localhost:3000'); // Connect to your Socket.IO server
 
 const ShareCodePage: React.FC = () => {
     const searchParams = useSearchParams();
@@ -30,8 +30,17 @@ const ShareCodePage: React.FC = () => {
             console.log(message);
         });
 
+        // Auto-refresh every second
+        const intervalId = setInterval(() => {
+            const storedCode = localStorage.getItem('sharedCode');
+            if (storedCode) {
+                setSharedCode(storedCode);
+            }
+        }, 1000); // Refresh every second
+
         // Clean up on unmount
         return () => {
+            clearInterval(intervalId); // Clear the interval on component unmount
             socket.off('codeUpdate');
             socket.off('message');
         };
@@ -50,11 +59,18 @@ const ShareCodePage: React.FC = () => {
         setTimeout(() => setToastMessage(null), 3000);
     };
 
+    const debouncedEmitCodeChange = useRef(
+        debounce((newCode) => {
+            // Send the updated code to the Socket.IO server
+            socket.emit('codeChange', newCode);
+            localStorage.setItem('sharedCode', newCode); // Store the updated code in localStorage
+        }, 500) // Adjust the delay (in milliseconds) as necessary
+    ).current;
+
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newCode = e.target.value;
         setSharedCode(newCode);
-        // Send the updated code to the Socket.IO server
-        socket.emit('codeChange', newCode);
+        debouncedEmitCodeChange(newCode);
     };
 
     const calculateLineNumbers = () => {

@@ -13,6 +13,7 @@
   "dependencies": {
     "@types/websocket": "^1.0.10",
     "express": "^4.21.0",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.447.0",
     "next": "14.2.14",
     "react": "^18",
@@ -22,6 +23,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20.16.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",

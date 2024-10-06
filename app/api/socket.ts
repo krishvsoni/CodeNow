@@ -10,24 +10,20 @@ export const config = {
 };
 
 let io: Server | null = null;
+let connectedClientsCount = 0; // Track number of connected clients
 
 export default function socketHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    // Ensure that res.socket and res.socket.server are defined
     const socket = res.socket as any;
 
-    // Check if the socket is null
     if (!socket || !socket.server) {
       res.status(500).send('Socket not available');
       return;
     }
 
-    // Initialize the Socket.IO server if it's not already initialized
     if (!io) {
-      // Type assertion for socket.server
       const server = socket.server as http.Server;
 
-      // Initialize Socket.IO server
       io = new Server(server, {
         cors: {
           origin: '*', // Allow all origins (adjust for production)
@@ -35,25 +31,34 @@ export default function socketHandler(req: NextApiRequest, res: NextApiResponse)
       });
 
       io.on('connection', (socket) => {
+        connectedClientsCount++; // Increment connected clients count
         console.log('New client connected');
 
-        // Send initial message
+        // Send the updated count to all connected clients if io is initialized
+        if (io) {
+          io.emit('clientCountUpdate', connectedClientsCount);
+        }
+
         socket.emit('message', 'Share your code now');
 
         socket.on('codeUpdate', (message: string) => {
           console.log(`Received message: ${message}`);
-          // Broadcast to all connected clients
           socket.broadcast.emit('message', message);
         });
 
         socket.on('disconnect', () => {
+          connectedClientsCount--; // Decrement connected clients count
           console.log('Client disconnected');
+
+          // Send the updated count to all connected clients if io is initialized
+          if (io) {
+            io.emit('clientCountUpdate', connectedClientsCount);
+          }
         });
       });
     }
 
-    // Attach the Socket.IO instance to the server for future requests
-    socket.server.io = io; // No need for `any` here
+    socket.server.io = io; 
     res.end();
   } else {
     res.status(405).end(); // Method Not Allowed

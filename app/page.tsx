@@ -53,8 +53,11 @@ export default function Component() {
                 >
                   Share Your Code Now
                 </button>
-                <button className="px-4 py-2 border border-gray-700 text-white font-medium rounded hover:bg-gray-800">
-                  Github Repository
+                <button
+                  className="px-4 py-2 border border-gray-700 text-white font-medium rounded hover:bg-gray-800"
+                  onClick={() => router.push('/compiler')}
+                >
+                  Online Compiler
                 </button>
               </div>
             </div>
@@ -101,8 +104,8 @@ export default function Component() {
               </div>
               <div className="flex flex-col items-center space-y-4 text-center">
                 <Globe className="h-10 w-10 text-green-500" />
-                <h2 className="text-xl font-bold">Multi-language Support</h2>
-                <p className="text-gray-400">From Python to JavaScript, CodeNow supports all major programming languages.</p>
+                <h2 className="text-xl font-bold">Compiler Support</h2>
+                <p className="text-gray-400">From Lua to Perl, CodeNow supports all major programming languages.</p>
               </div>
               <div className="flex flex-col items-center space-y-4 text-center">
                 <Users className="h-10 w-10 text-purple-500" />
@@ -142,6 +145,9 @@ export default function Component() {
 
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
         <p className="text-xs text-gray-400">© 2024 CodeNow. All rights reserved.</p>
+        <p className="text-slate-600 font-mono hover:text-white transition-colors duration-300">
+          built with ♥
+        </p>
       </footer>
     </div>
   );
