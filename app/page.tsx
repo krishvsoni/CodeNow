@@ -146,7 +146,7 @@ export default function Component() {
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
         <p className="text-xs text-gray-400">© 2024 CodeNow. All rights reserved.</p>
         <p className="text-slate-600 font-mono hover:text-white transition-colors duration-300">
-          built with ♥
+          built by krish soni
         </p>
       </footer>
     </div>
