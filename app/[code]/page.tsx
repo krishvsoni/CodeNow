@@ -4,9 +4,10 @@ import { Code, Copy, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { io } from 'socket.io-client';
-import debounce from 'lodash.debounce'; // Install lodash.debounce
+import debounce from 'lodash.debounce'; 
 
-const socket = io('http://localhost:3000'); // Connect to your Socket.IO server
+const socket = io('https://codenow-server.onrender.com'); 
+// const socket = io(process.env.SOCKET_URL); 
 
 const ShareCodePage: React.FC = () => {
     const searchParams = useSearchParams();
@@ -20,27 +21,16 @@ const ShareCodePage: React.FC = () => {
             setSharedCode(initialCode);
         }
 
-        // Listen for code updates
         socket.on('codeUpdate', (newCode: string) => {
+            console.log('Received code update:', newCode); 
             setSharedCode(newCode);
         });
 
-        // Send a welcome message
         socket.on('message', (message: string) => {
             console.log(message);
         });
 
-        // Auto-refresh every second
-        const intervalId = setInterval(() => {
-            const storedCode = localStorage.getItem('sharedCode');
-            if (storedCode) {
-                setSharedCode(storedCode);
-            }
-        }, 1000); // Refresh every second
-
-        // Clean up on unmount
         return () => {
-            clearInterval(intervalId); // Clear the interval on component unmount
             socket.off('codeUpdate');
             socket.off('message');
         };
@@ -59,16 +49,19 @@ const ShareCodePage: React.FC = () => {
         setTimeout(() => setToastMessage(null), 3000);
     };
 
+    // Debounced function to emit codeChange with URL
     const debouncedEmitCodeChange = useRef(
         debounce((newCode) => {
-            // Send the updated code to the Socket.IO server
-            socket.emit('codeChange', newCode);
-            localStorage.setItem('sharedCode', newCode); // Store the updated code in localStorage
-        }, 500) // Adjust the delay (in milliseconds) as necessary
+            const url = window.location.href; // Capture the current URL
+            console.log('Emitting Code Change:', { newCode, url }); // Debugging line
+            socket.emit('codeChange', { newCode, url }); // Emit both the new code and the URL
+            localStorage.setItem('sharedCode', newCode); 
+        }, 500) 
     ).current;
 
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newCode = e.target.value;
+        console.log('New Code:', newCode);  // Debugging line
         setSharedCode(newCode);
         debouncedEmitCodeChange(newCode);
     };
@@ -138,7 +131,6 @@ const ShareCodePage: React.FC = () => {
                 </div>
             </main>
 
-            {/* Toast notification */}
             {toastMessage && (
                 <div className="fixed bottom-4 right-4 bg-gray-800 text-gray-100 p-3 rounded shadow-lg">
                     {toastMessage}
