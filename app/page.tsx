@@ -198,6 +198,7 @@ export default function Component() {
               </div>
             </div>
           </div>
+          
         </motion.section>
       </main>
 
