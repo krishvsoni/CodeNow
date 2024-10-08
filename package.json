@@ -13,6 +13,7 @@
   "dependencies": {
     "@types/websocket": "^1.0.10",
     "express": "^4.21.0",
+    "framer-motion": "^11.11.2",
     "highlight.js": "^11.10.0",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.447.0",
