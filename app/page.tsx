@@ -35,7 +35,7 @@ export default function Component() {
           href="https://github.com/krishvsoni/CodeNow" 
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center text-sm text-blue-500 hover:underline"
+          className="flex items-center text-sm text-blue-500 "
         >
           <svg
             className="h-5 w-5 mr-1"
@@ -91,7 +91,7 @@ export default function Component() {
         {/* Modal for entering code */}
         {isModalOpen && (
           <motion.div
-            className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center"
+            className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -108,7 +108,7 @@ export default function Component() {
               <input
                 type="text"
                 className="w-full px-3 py-2 bg-gray-700 text-white rounded mb-4"
-                placeholder="Enter code here..."
+                placeholder="your room code "
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
@@ -167,8 +167,8 @@ export default function Component() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Users className="h-10 w-10 text-purple-500" />
-                <h2 className="text-xl font-bold">Team Management</h2>
-                <p className="text-gray-400">Easily manage your team, projects, and permissions all in one place.</p>
+                <h2 className="text-xl font-bold">Team Work</h2>
+                <p className="text-gray-400">Easily manage your team, projects, and code all in one place.</p>
               </motion.div>
             </div>
           </div>
@@ -202,10 +202,10 @@ export default function Component() {
         </motion.section>
       </main>
 
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full  shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
         <p className="text-sm text-gray-400">© 2024 CodeNow. All rights reserved.</p>
         <p className="text-slate-600 font-mono hover:text-white transition-colors duration-300">
-          built by Krish Soni 🚀
+          built by Krish Soni
         </p>
       </footer>
     </div>
