@@ -11,6 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
     "@types/websocket": "^1.0.10",
     "express": "^4.21.0",
     "framer-motion": "^11.11.2",
@@ -19,9 +20,12 @@
     "lucide-react": "^0.447.0",
     "lz-string": "^1.5.0",
     "next": "14.2.14",
+    "peerjs": "^1.5.4",
     "prismjs": "^1.29.0",
     "react": "^18",
+    "react-codemirror2": "^8.0.0",
     "react-dom": "^18",
+    "simple-peer": "^9.11.1",
     "socket.io": "^4.8.0",
     "socket.io-client": "^4.8.0",
     "ws": "^8.18.0"
