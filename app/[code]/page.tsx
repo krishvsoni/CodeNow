@@ -7,8 +7,8 @@ import { io } from 'socket.io-client';
 import debounce from 'lodash.debounce';
 import LZString from 'lz-string';
 
-// const socket = io('https://codenow-server.onrender.com');
-const socket = io('http://localhost:3001');
+const socket = io('https://codenow-server.onrender.com');
+// const socket = io('http://localhost:3001');
 
 const ShareCodePage: React.FC = () => {
     const searchParams = useSearchParams();
