@@ -15,7 +15,7 @@ const CompilerPage: React.FC = () => {
           href="https://github.com/krishvsoni/CodeNow" 
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center text-sm text-blue-500 hover:underline"
+          className="flex items-center text-sm text-blue-500"
         >
           <svg
         className="h-5 w-5 mr-1"
