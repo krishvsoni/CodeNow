@@ -1,9 +1,16 @@
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Terminal } from 'lucide-react';
 
 const CompilerPage: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  const handleIframeLoad = () => {
+    setLoading(false); // Set loading to false when iframe is fully loaded
+  };
+
   return (
     <div className="flex flex-col min-h-screen font-sans bg-gray-950 text-gray-100">
       <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b border-gray-800">
@@ -33,7 +40,6 @@ const CompilerPage: React.FC = () => {
         </a>
       </header>
 
-
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-6">
         <div className="max-w-4xl mx-auto space-y-4">
@@ -41,13 +47,20 @@ const CompilerPage: React.FC = () => {
           <p className="text-gray-400">Use the compiler below to test and run your code directly in the browser.</p>
 
           {/* IFrame for OneCompiler */}
-          <div className="border border-gray-800 rounded-lg overflow-hidden">
+          <div className="relative border border-gray-800 rounded-lg overflow-hidden">
+            {/* Loader Spinner */}
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-950 opacity-75">
+                <div className="w-12 h-12 border-4 border-t-4 border-blue-500 rounded-full animate-spin"></div>
+              </div>
+            )}
             <iframe
               frameBorder="0"
               height="650px"
               src="https://onecompiler.com/embed/"
               width="100%"
               title="Online Compiler"
+              onLoad={handleIframeLoad} // Trigger when iframe is loaded
             ></iframe>
           </div>
         </div>
