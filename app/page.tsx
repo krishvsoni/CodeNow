@@ -1,14 +1,14 @@
 'use client';
 import { useState } from "react";
-import { Code, Users, Zap, Globe } from "lucide-react";
+import {  Users, Zap, Globe, Terminal } from 'lucide-react';
 import Link from "next/link";
-import { useRouter } from 'next/navigation'; // Import useRouter
-import { motion } from 'framer-motion'; // Import motion
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [code, setCode] = useState("");
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   const handleShareCodeClick = () => {
     setIsModalOpen(true);
@@ -25,17 +25,17 @@ export default function Component() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-gray-950 text-gray-100">
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
+    <div className="flex flex-col min-h-screen  bg-gray-950 text-gray-100">
+      <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b border-gray-800">
         <Link className="flex items-center justify-center" href="/">
-          <Code className="h-6 w-6 mr-2" />
+          <Terminal className="h-6 w-6 mr-2 text-blue-500" />
           <span className="font-bold text-xl">CodeNow</span>
         </Link>
         <a
           href="https://github.com/krishvsoni/CodeNow" 
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center text-sm text-blue-500 "
+          className="flex items-center text-sm text-blue-500 hover:text-blue-400 transition-colors"
         >
           <svg
             className="h-5 w-5 mr-1"
@@ -63,22 +63,22 @@ export default function Component() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500">
                   Code Together, Anywhere, Anytime
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
+                <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl font-light">
                   CodeNow is the realtime code sharing platform that brings developers together. Collaborate, learn, and create in perfect sync.
                 </p>
               </div>
               <div className="space-x-4">
                 <button
-                  className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+                  className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-blue-500/50"
                   onClick={handleShareCodeClick}
                 >
                   Share Your Code Now
                 </button>
                 <button
-                  className="px-4 py-2 border border-gray-700 text-white font-medium rounded hover:bg-gray-800"
+                  className="px-6 mt-4 py-3 border border-gray-700 text-white font-medium rounded-md hover:bg-gray-800 transition-colors duration-300"
                   onClick={() => router.push('/compiler')}
                 >
                   Online Compiler
@@ -88,7 +88,6 @@ export default function Component() {
           </div>
         </motion.section>
 
-        {/* Modal for entering code */}
         {isModalOpen && (
           <motion.div
             className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50"
@@ -98,7 +97,7 @@ export default function Component() {
             transition={{ duration: 0.3 }}
           >
             <motion.div
-              className="bg-gray-800 p-6 rounded-lg shadow-lg w-80"
+              className="bg-gray-900 p-6 rounded-lg shadow-lg w-80"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
@@ -107,20 +106,20 @@ export default function Component() {
               <h2 className="text-2xl font-bold text-white mb-4">Enter Your Code</h2>
               <input
                 type="text"
-                className="w-full px-3 py-2 bg-gray-700 text-white rounded mb-4"
-                placeholder="your room code "
+                className="w-full px-3 py-2 bg-gray-700 text-white rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="your room code"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
               <div className="flex justify-end space-x-2">
                 <button
-                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors duration-300"
                   onClick={handleCloseModal}
                 >
                   Cancel
                 </button>
                 <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-300"
                   onClick={handleCodeSubmit}
                 >
                   Submit
@@ -198,11 +197,10 @@ export default function Component() {
               </div>
             </div>
           </div>
-          
         </motion.section>
       </main>
 
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full  shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
         <p className="text-sm text-gray-400">© 2024 CodeNow. All rights reserved.</p>
         <p className="text-slate-600 font-mono hover:text-white transition-colors duration-300">
           built by Krish Soni
@@ -211,3 +209,4 @@ export default function Component() {
     </div>
   );
 }
+
