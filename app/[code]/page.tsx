@@ -31,7 +31,7 @@ const ShareCodePage: React.FC = () => {
             const data = await response.json();
             if (data.code) {
               const decompressedCode = LZString.decompressFromEncodedURIComponent(data.code);
-              setSharedCode(decompressedCode); // Set code in sharedCode state
+              setSharedCode(decompressedCode); 
             }
           } else {
             console.error("Code not found for the given short ID.");
