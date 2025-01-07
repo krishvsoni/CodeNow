@@ -35,7 +35,7 @@ const ShareCodePage: React.FC = () => {
             }
           } else {
             console.error("Code not found for the given short ID.");
-            showToast("Code not found.");
+            showToast("Share your code now.");
           }
         } catch (error) {
           console.error('Error fetching code:', error);
