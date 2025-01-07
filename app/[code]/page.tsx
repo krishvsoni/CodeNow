@@ -11,7 +11,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { nanoid } from 'nanoid';
 
-const socket = io('https://codenow-server-cfdhbwfbhad2hmb9.centralindia-01.azurewebsites.net');
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_UR);
 
 const ShareCodePage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -20,25 +20,29 @@ const ShareCodePage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 1 });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+  const [isMounted, setIsMounted] = useState(false); 
   useEffect(() => {
-    const shortId = window.location.pathname.substring(1); 
+    setIsMounted(true); 
+
+    if (!isMounted) return;
+
+    const shortId = window.location.pathname.substring(1);
     if (shortId) {
       const fetchCode = async () => {
         try {
-          const response = await fetch(`https://codenow-server-cfdhbwfbhad2hmb9.centralindia-01.azurewebsites.net/api/getCode/${shortId}`);
+          const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/getCode/${shortId}`);
           if (response.ok) {
             const data = await response.json();
             if (data.code) {
               const decompressedCode = LZString.decompressFromEncodedURIComponent(data.code);
               setSharedCode(decompressedCode); 
+            } else {
+              showToast("Code not found.");
             }
           } else {
-            console.error("Code not found for the given short ID.");
-            showToast("Code not found.");
+            showToast("Failed to fetch code.");
           }
-        } catch (error) {
-          console.error('Error fetching code:', error);
+        } catch {
           showToast("Failed to fetch code.");
         }
       };
@@ -56,7 +60,7 @@ const ShareCodePage: React.FC = () => {
       socket.off('codeUpdate', handleCodeUpdate);
       socket.off('message', handleMessage);
     };
-  }, []); 
+  }, [isMounted]); 
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -74,7 +78,7 @@ const ShareCodePage: React.FC = () => {
 
       const shortId = nanoid(8);
 
-      await fetch('https://codenow-server-cfdhbwfbhad2hmb9.centralindia-01.azurewebsites.net/api/saveCode', {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/saveCode`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: shortId, code: compressedCode }),
@@ -111,6 +115,10 @@ const ShareCodePage: React.FC = () => {
   };
 
   const lines = sharedCode.split('\n');
+
+  if (!isMounted) return null;
+
+
     return (
         <div className="flex flex-col min-h-screen  bg-gray-950 text-gray-100">
             <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b border-gray-800">
@@ -243,4 +251,3 @@ const ShareCodePage: React.FC = () => {
 };
 
 export default ShareCodePage;
-
