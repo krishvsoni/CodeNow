@@ -8,7 +8,7 @@ const CompilerPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const handleIframeLoad = () => {
-    setLoading(false); // Set loading to false when iframe is fully loaded
+    setLoading(false); 
   };
 
   return (
@@ -46,9 +46,7 @@ const CompilerPage: React.FC = () => {
           <h1 className="text-2xl font-bold">Compiler</h1>
           <p className="text-gray-400">Use the compiler below to test and run your code directly in the browser.</p>
 
-          {/* IFrame for OneCompiler */}
           <div className="relative border border-gray-800 rounded-lg overflow-hidden">
-            {/* Loader Spinner */}
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-950 opacity-75">
                 <div className="w-12 h-12 border-4 border-t-4 border-blue-500 rounded-full animate-spin"></div>
@@ -60,7 +58,7 @@ const CompilerPage: React.FC = () => {
               src="https://onecompiler.com/embed/"
               width="100%"
               title="Online Compiler"
-              onLoad={handleIframeLoad} // Trigger when iframe is loaded
+              onLoad={handleIframeLoad} 
             ></iframe>
           </div>
         </div>
