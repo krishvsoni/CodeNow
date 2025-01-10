@@ -1,9 +1,9 @@
 'use client';
 import { useState } from "react";
-import { Users, Zap, Globe, Terminal, Code } from 'lucide-react';
-import Link from "next/link";
+import { Users, Zap, Globe,  Code } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Navbar } from "@/components/Navbar";
 
 export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,8 +25,10 @@ export default function Component() {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="flex flex-col min-h-screen bg-gray-950 text-gray-100">
-      <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b border-gray-800">
+      {/* <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b border-gray-800">
         <Link className="flex items-center justify-center" href="/">
           <Terminal className="h-6 w-6 mr-2 text-blue-500" />
           <span className="font-bold text-xl">CodeNow</span>
@@ -54,7 +56,7 @@ export default function Component() {
             GitHub
           </a>
         </div>
-      </header>
+      </header> */}
 
       <main className="flex-1 flex flex-col justify-center items-center">
         
@@ -251,12 +253,13 @@ export default function Component() {
       </main>
 
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center justify-center px-4 md:px-6 border-t border-gray-800">
-        <p className="text-sm text-gray-400">© 2024 CodeNow. All rights reserved.</p>
-        <p className="text-slate-600 font-mono hover:text-white transition-colors duration-300">
+      <p className="text-sm text-gray-400">© {new Date().getFullYear()} CodeNow. All rights reserved.</p>
+      <p className="text-slate-600 font-mono font-bold hover:text-white transition-colors duration-300">
           built by Krish Soni
         </p>
       </footer>
     </div>
+    </>
   );
 }
 
