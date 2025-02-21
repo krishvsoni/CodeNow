@@ -1,36 +1,88 @@
-'use client';
-import { useState } from "react";
-import { Users, Zap, Globe, Code } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Navbar } from "@/components/Navbar";
-import { BackgroundBeamsWithCollision } from "@/components/background-beams-with-collision";
+"use client"
+import { useState } from "react"
+import { Users, Zap, Globe, Code } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
+import { Navbar } from "@/components/Navbar"
+import { BackgroundBeamsWithCollision } from "@/components/background-beams-with-collision"
+
+const AnimatedLaptop = () => (
+  <motion.svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 250 200"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="mb-8 w-[150px] sm:w-[200px] md:w-[250px]"
+  >
+    <motion.rect
+      x="25"
+      y="15"
+      width="200"
+      height="130"
+      rx="5"
+      fill="#B0C4DE"
+      initial={{ scaleY: 0 }}
+      animate={{ scaleY: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    />
+    <motion.rect
+      x="40"
+      y="30"
+      width="170"
+      height="100"
+      rx="2"
+      fill="#3E8EDE"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.5, duration: 0.5 }}
+    />
+    <motion.path
+      d="M10 150H240L250 180H0L10 150Z"
+      fill="#B0C4DE"
+      initial={{ y: 30, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.7, duration: 0.5, ease: "easeOut" }}
+    />
+    <motion.rect
+      x="105"
+      y="160"
+      width="40"
+      height="5"
+      rx="2.5"
+      fill="#3E8EDE"
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ delay: 1, duration: 0.3 }}
+    />
+  </motion.svg>
+)
 
 export default function Component() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [code, setCode] = useState("");
-  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [code, setCode] = useState("")
+  const router = useRouter()
 
   const handleShareCodeClick = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   const handleCodeSubmit = () => {
-    console.log('code entered', code);
-    router.push(`/${code}`);
-    handleCloseModal();
-  };
+    console.log("code entered", code)
+    router.push(`/${code}`)
+    handleCloseModal()
+  }
 
   const paths = Array.from({ length: 36 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5} -${189 + i * 6}C-${380 - i * 5} -${189 + i * 6} -${312 - i * 5} ${216 - i * 6} ${152 - i * 5} ${343 - i * 6}C${616 - i * 5} ${470 - i * 6} ${684 - i * 5} ${875 - i * 6} ${684 - i * 5} ${875 - i * 6}`,
     color: `rgba(15,23,42,${0.1 + i * 0.03})`,
     width: 0.5 + i * 0.03,
-  }));
+  }))
 
   return (
     <>
@@ -38,11 +90,7 @@ export default function Component() {
 
       <div className="relative min-h-screen w-full flex flex-col overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <svg
-            className="w-full h-full bg-gray-950 text-slate-950 dark:text-white"
-            viewBox="0 0 696 316"
-            fill="none"
-          >
+          <svg className="w-full h-full bg-gray-950 text-slate-950 dark:text-white" viewBox="0 0 696 316" fill="none">
             {paths.map((path) => (
               <motion.path
                 key={path.id}
@@ -68,7 +116,7 @@ export default function Component() {
 
         <main className="flex-1 flex flex-col justify-center items-center relative z-10">
           <motion.section
-            className="w-full py-12 md:py-24 lg:py-32 xl:py-48 flex justify-center items-center"
+            className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
@@ -76,40 +124,47 @@ export default function Component() {
             <BackgroundBeamsWithCollision>
               <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center space-y-4 text-center">
+                  <AnimatedLaptop />
                   <div className="space-y-2">
                     <motion.h1
-                      className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500"
+                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500"
                       initial={{ y: -50, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ duration: 0.5, staggerChildren: 0.05 }}
                     >
                       {"Code Together, Anywhere, Anytime".split("").map((char, index) => (
-                        <motion.span key={index} initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.05, delay: index * 0.05 }}>
+                        <motion.span
+                          key={index}
+                          initial={{ y: -50, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.05, delay: index * 0.05 }}
+                        >
                           {char}
                         </motion.span>
                       ))}
                     </motion.h1>
                     <motion.p
-                      className="mx-auto max-w-[700px] text-gray-400 md:text-xl font-light"
+                      className="mx-auto max-w-[700px] text-gray-400 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-light"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 2 }}
                     >
-                      CodeNow is the realtime code sharing platform that brings developers together. Collaborate, learn, and create in perfect sync.
+                      Realtime code sharing platform that brings developers together. Collaborate, learn, and create in
+                      perfect sync.
                     </motion.p>
                   </div>
-                  <div className="text-gray-400 md:text-xl mr-5 text-center font-light">
+                  <div className="text-gray-400 text-sm sm:text-base md:text-lg lg:text-xl text-center font-light">
                     <a
                       href="https://marketplace.visualstudio.com/items?itemName=KrishSoni.codenow"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center text-sm text-blue-500 hover:text-blue-400 transition-colors"
+                      className="flex items-center text-blue-500 hover:text-blue-400 transition-colors"
                     >
-                      <Code className="h-5 w-5 mr-1" />
+                      <Code className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 mr-1" />
                       VS Code Extension
                     </a>
                   </div>
-                  <div className="space-x-4">
+                  <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row">
                     <button
                       className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-blue-500/50"
                       onClick={handleShareCodeClick}
@@ -117,8 +172,8 @@ export default function Component() {
                       Share Your Code Now
                     </button>
                     <button
-                      className="px-6 mt-4 py-3 border border-gray-700 text-white font-medium rounded-md hover:bg-gray-800 transition-colors duration-300"
-                      onClick={() => router.push('/v1/compiler')}
+                      className="px-6 py-3 border border-gray-700 text-white font-medium rounded-md hover:bg-gray-800 transition-colors duration-300"
+                      onClick={() => router.push("/v1/compiler")}
                     >
                       Online Compiler
                     </button>
@@ -169,14 +224,14 @@ export default function Component() {
             </motion.div>
           )}
 
-              <motion.section
-              className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              >
-              <div className="container px-4 md:px-6">
-                <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.section
+            className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="container px-4 md:px-6">
+              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
                 <motion.div
                   className="flex flex-col items-center space-y-4 text-center"
                   initial={{ opacity: 0, y: 20 }}
@@ -185,7 +240,9 @@ export default function Component() {
                 >
                   <Zap className="h-10 w-10 text-blue-500" />
                   <h2 className="text-xl font-bold">Realtime Collaboration</h2>
-                  <p className="text-gray-400">Code together in real-time with your team, no matter where they are in the world.</p>
+                  <p className="text-gray-400">
+                    Code together in real-time with your team, no matter where they are in the world.
+                  </p>
                 </motion.div>
 
                 <motion.div
@@ -209,9 +266,9 @@ export default function Component() {
                   <h2 className="text-xl font-bold">Team Work</h2>
                   <p className="text-gray-400">Easily manage your team, projects, and code all in one place.</p>
                 </motion.div>
-                </div>
               </div>
-              </motion.section>
+            </div>
+          </motion.section>
 
           <motion.section
             className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
@@ -224,7 +281,8 @@ export default function Component() {
                 <Code className="h-16 w-16 text-blue-500" />
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">VS Code Extension</h2>
                 <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
-                  Enhance your coding experience with our VS Code extension. Share code directly from your editor and collaborate in real-time.
+                  Enhance your coding experience with our VS Code extension. Share code directly from your editor and
+                  collaborate in real-time.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
                   <a
@@ -237,7 +295,9 @@ export default function Component() {
                     Get the Extension
                   </a>
                   <div className="text-sm text-gray-400 flex items-center">
-                    <span className="px-3 py-1 bg-gray-700 font-bold rounded-md font-mono">ext install KrishSoni.codenow</span>
+                    <span className="px-3 py-1 bg-gray-700 font-bold rounded-md font-mono">
+                      ext install KrishSoni.codenow
+                    </span>
                   </div>
                 </div>
               </div>
@@ -264,7 +324,8 @@ export default function Component() {
                       className="text-blue-500 hover:underline"
                     >
                       GitHub Issues page
-                    </a>.
+                    </a>
+                    .
                   </p>
                 </div>
               </div>
@@ -280,5 +341,6 @@ export default function Component() {
         </footer>
       </div>
     </>
-  );
+  )
 }
+
