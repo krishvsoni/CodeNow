@@ -4,6 +4,7 @@ import { Users, Zap, Globe, Code } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Navbar } from "@/components/Navbar";
+import { BackgroundBeamsWithCollision } from "@/components/background-beams-with-collision";
 
 export default function Component() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,6 +35,7 @@ export default function Component() {
   return (
     <>
       <Navbar />
+
       <div className="relative min-h-screen w-full flex flex-col overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <svg
@@ -71,58 +73,59 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
+            <BackgroundBeamsWithCollision>
+              <div className="container px-4 md:px-6">
+                <div className="flex flex-col items-center space-y-4 text-center">
+                  <div className="space-y-2">
                     <motion.h1
-                    className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500"
-                    initial={{ y: -50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, staggerChildren: 0.05 }}
+                      className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-green-500"
+                      initial={{ y: -50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.5, staggerChildren: 0.05 }}
                     >
-                      
-                    {"Code Together, Anywhere, Anytime".split("").map((char, index) => (
-                      <motion.span key={index} initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.05, delay: index * 0.05 }}>
-                      {char}
-                      </motion.span>
-                    ))}
+                      {"Code Together, Anywhere, Anytime".split("").map((char, index) => (
+                        <motion.span key={index} initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.05, delay: index * 0.05 }}>
+                          {char}
+                        </motion.span>
+                      ))}
                     </motion.h1>
                     <motion.p
-                    className="mx-auto max-w-[700px] text-gray-400 md:text-xl font-light"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 2 }}
+                      className="mx-auto max-w-[700px] text-gray-400 md:text-xl font-light"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 2 }}
                     >
-                    CodeNow is the realtime code sharing platform that brings developers together. Collaborate, learn, and create in perfect sync.
+                      CodeNow is the realtime code sharing platform that brings developers together. Collaborate, learn, and create in perfect sync.
                     </motion.p>
-                </div>
-                <div className="text-gray-400 md:text-xl  mr-5 text-center font-light">
-                  <a
-                    href="https://marketplace.visualstudio.com/items?itemName=KrishSoni.codenow"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center text-sm text-blue-500 hover:text-blue-400 transition-colors"
-                  >
-                    <Code className="h-5 w-5 mr-1" />
-                    VS Code Extension
-                  </a>
-                </div>
-                <div className="space-x-4">
-                  <button
-                    className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-blue-500/50"
-                    onClick={handleShareCodeClick}
-                  >
-                    Share Your Code Now
-                  </button>
-                  <button
-                    className="px-6 mt-4 py-3 border border-gray-700 text-white font-medium rounded-md hover:bg-gray-800 transition-colors duration-300"
-                    onClick={() => router.push('/v1/compiler')}
-                  >
-                    Online Compiler
-                  </button>
+                  </div>
+                  <div className="text-gray-400 md:text-xl mr-5 text-center font-light">
+                    <a
+                      href="https://marketplace.visualstudio.com/items?itemName=KrishSoni.codenow"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center text-sm text-blue-500 hover:text-blue-400 transition-colors"
+                    >
+                      <Code className="h-5 w-5 mr-1" />
+                      VS Code Extension
+                    </a>
+                  </div>
+                  <div className="space-x-4">
+                    <button
+                      className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-blue-500/50"
+                      onClick={handleShareCodeClick}
+                    >
+                      Share Your Code Now
+                    </button>
+                    <button
+                      className="px-6 mt-4 py-3 border border-gray-700 text-white font-medium rounded-md hover:bg-gray-800 transition-colors duration-300"
+                      onClick={() => router.push('/v1/compiler')}
+                    >
+                      Online Compiler
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </BackgroundBeamsWithCollision>
           </motion.section>
 
           {isModalOpen && (
@@ -166,14 +169,14 @@ export default function Component() {
             </motion.div>
           )}
 
-          <motion.section
-            className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="container px-4 md:px-6">
-              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+              <motion.section
+              className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              >
+              <div className="container px-4 md:px-6">
+                <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
                 <motion.div
                   className="flex flex-col items-center space-y-4 text-center"
                   initial={{ opacity: 0, y: 20 }}
@@ -206,9 +209,9 @@ export default function Component() {
                   <h2 className="text-xl font-bold">Team Work</h2>
                   <p className="text-gray-400">Easily manage your team, projects, and code all in one place.</p>
                 </motion.div>
+                </div>
               </div>
-            </div>
-          </motion.section>
+              </motion.section>
 
           <motion.section
             className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
@@ -216,7 +219,7 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="container px-4   md:px-8">
+            <div className="container px-4 md:px-8">
               <div className="flex flex-col items-center space-y-6 text-center">
                 <Code className="h-16 w-16 text-blue-500" />
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">VS Code Extension</h2>
@@ -247,12 +250,12 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="container px-4  md:px-6">
+            <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">For Inquiries</h2>
                   <p className="mx-auto max-w-[600px] text-gray-400 md:text-xl">
-                    Have a question or need assistance? <br></br>
+                    Have a question or need assistance? <br />
                     Raise an issue on our <br />
                     <a
                       href="https://github.com/krishvsoni/CodeNow/issues"
@@ -279,5 +282,3 @@ export default function Component() {
     </>
   );
 }
-
-
