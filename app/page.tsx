@@ -192,13 +192,13 @@ export default function Component() {
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="bg-gray-900 p-6 rounded-lg shadow-lg w-80"
+                className="bg-[#030712] p-6 rounded-lg shadow-lg w-80"
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.9 }}
                 transition={{ duration: 0.2 }}
               >
-                <h2 className="text-2xl font-bold text-white mb-4">Enter Your Code</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">Create Room</h2>
                 <input
                   type="text"
                   className="w-full px-3 py-2 bg-gray-700 text-white rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -214,7 +214,7 @@ export default function Component() {
                     Cancel
                   </button>
                   <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-300"
+                    className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-300 shadow-lg hover:shadow-blue-500/50"
                     onClick={handleCodeSubmit}
                   >
                     Submit
@@ -225,7 +225,7 @@ export default function Component() {
           )}
 
           <motion.section
-            className="w-full py-12 md:py-24 lg:py-32 flex justify-center items-center"
+            className="w-full py-12 md:py-24 lg:py-32 flex bg-[#030712]  justify-center items-center"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -277,29 +277,29 @@ export default function Component() {
             transition={{ duration: 0.5 }}
           >
             <div className="container px-4 md:px-8">
-              <div className="flex flex-col items-center space-y-6 text-center">
-                <Code className="h-16 w-16 text-blue-500" />
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">VS Code Extension</h2>
-                <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
-                  Enhance your coding experience with our VS Code extension. Share code directly from your editor and
-                  collaborate in real-time.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
-                  <a
-                    href="https://marketplace.visualstudio.com/items?itemName=KrishSoni.codenow"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center"
-                  >
-                    <Code className="h-5 w-5 mr-2" />
-                    Get the Extension
-                  </a>
-                  <div className="text-sm text-gray-400 flex items-center">
-                    <span className="px-3 py-1 bg-gray-700 font-bold rounded-md font-mono">
-                      ext install KrishSoni.codenow
-                    </span>
-                  </div>
+              <div className="flex flex-col items-center space-y-6 mx-auto text-center bg-[#030712] p-10 rounded-lg shadow-lg">
+              <Code className="h-16 w-16 text-blue-500" />
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">VS Code Extension</h2>
+              <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
+                Enhance your coding experience with our VS Code extension. Share code directly from your editor and
+                collaborate in real-time.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <a
+                href="https://marketplace.visualstudio.com/items?itemName=KrishSoni.codenow"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center"
+                >
+                <Code className="h-5 w-5 mr-2" />
+                Get the Extension
+                </a>
+                <div className="text-sm text-gray-400 flex items-center">
+                <span className="px-3 py-1 bg-gray-700 font-bold rounded-md font-mono">
+                  ext install KrishSoni.codenow
+                </span>
                 </div>
+              </div>
               </div>
             </div>
           </motion.section>
