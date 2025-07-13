@@ -88,12 +88,25 @@ const ShareCodePage: React.FC = () => {
     if (shortId) {
       const fetchCode = async () => {
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/getCode/${shortId}`)
+          // Try to fetch from MongoDB first
+          let response = await fetch(`/api/getFromDB/${shortId}`)
+          let data = await response.json()
+          
+          if (response.ok && data.success && data.data?.code) {
+            const decompressedCode = LZString.decompressFromEncodedURIComponent(data.data.code)
+            setSharedCode(decompressedCode || "")
+            console.log('Code loaded from MongoDB')
+            return
+          }
+          
+          // Fallback to the original server endpoint
+          response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/getCode/${shortId}`)
           if (response.ok) {
-            const data = await response.json()
+            data = await response.json()
             if (data.code) {
               const decompressedCode = LZString.decompressFromEncodedURIComponent(data.code)
               setSharedCode(decompressedCode || "")
+              console.log('Code loaded from original server')
             }
           } else {
             console.error("Code not found for the given short ID.")
@@ -163,14 +176,36 @@ const ShareCodePage: React.FC = () => {
     try {
       const compressedCode = LZString.compressToEncodedURIComponent(sharedCode)
       const shortId = nanoid(8)
+      const shortUrl = `${window.location.origin}/${shortId}`
+      
+      // Save to the existing server endpoint
       await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/saveCode`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: shortId, code: compressedCode }),
       })
-      const shortUrl = `${window.location.origin}/${shortId}`
+      
+      // Also save to MongoDB using our new API route
+      const mongoResponse = await fetch('/api/saveToDB', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id: shortId, 
+          code: compressedCode,
+          url: shortUrl
+        })
+      })
+      
+      const mongoResult = await mongoResponse.json()
+      
+      if (mongoResult.success) {
+        console.log('')
+      } else {
+        console.error('')
+      }
+      
       await navigator.clipboard.writeText(shortUrl)
-      showToast("Share link copied to clipboard!")
+      showToast("Share link copied!")
     } catch (err) {
       console.error("Error:", err)
       showToast("Failed to create share link.")
@@ -325,7 +360,11 @@ const ShareCodePage: React.FC = () => {
                     </li>
                     <li className="flex items-start">
                       <span className="text-orange-500 mr-2">■</span>
-                      Use SHARE button to generate permanent link for code access and distribution.
+                      Use SHARE button to generate permanent link and save to both server and MongoDB database simultaneously.
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">■</span>
+                      Code is automatically saved to MongoDB with persistent storage for backup and retrieval.
                     </li>
                   </ul>
                 </div>
