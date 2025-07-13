@@ -69,17 +69,7 @@ const CyberpunkNavbar = () => (
             codenow
           </span>
         </div>
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="#features" className="text-gray-300 hover:text-orange-500 transition-colors duration-300 font-mono">
-            Features
-          </a>
-          <a href="#extension" className="text-gray-300 hover:text-orange-500 transition-colors duration-300 font-mono">
-            Extension
-          </a>
-          <a href="#contact" className="text-gray-300 hover:text-orange-500 transition-colors duration-300 font-mono">
-            Contact
-          </a>
-        </div>
+       
       </div>
     </div>
   </nav>
