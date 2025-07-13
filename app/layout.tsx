@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "CodeNow",
+  title: "codenow",
   description: "CodeNow is the realtime code sharing platform that brings developers together. Collaborate, learn, and create in perfect sync.",
 };
 
