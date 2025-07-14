@@ -38,6 +38,15 @@ const CodeSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  isTemporary: {
+    type: Boolean,
+    default: false
+  },
+  expiresAt: {
+    type: Date,
+    default: null,
+    index: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -48,25 +57,29 @@ const CodeSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt field before saving
+CodeSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 CodeSchema.pre('save', function(next) {
   this.updatedAt = new Date();
   next();
 });
 
-// Create model (check if already exists to avoid re-compilation error)
 const Code = mongoose.models.Code || mongoose.model('Code', CodeSchema);
 
 export interface SaveCodeData {
   id: string;
   code: string;
   url?: string;
+  isTemporary?: boolean;
+  expiresAt?: Date;
 }
 
 export interface CodeData {
   id: string;
   code?: string;
   url?: string;
+  isTemporary?: boolean;
+  expiresAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -79,17 +92,12 @@ export interface SaveCodeResponse {
   error?: string;
 }
 
-/**
- * Save code to MongoDB database
- * @param codeData - Object containing id, code, and optional url
- * @returns Promise with success/failure response
- */
+
 export const saveCodeToDB = async (codeData: SaveCodeData): Promise<SaveCodeResponse> => {
   try {
-    // Connect to database
     await connectDB();
     
-    const { id, code, url } = codeData;
+    const { id, code, url, isTemporary = false, expiresAt } = codeData;
     
     // Validate required fields
     if (!id || !code) {
@@ -100,14 +108,17 @@ export const saveCodeToDB = async (codeData: SaveCodeData): Promise<SaveCodeResp
       };
     }
     
-    // Check if code with this ID already exists
     const existingCode = await Code.findOne({ id });
     
     if (existingCode) {
-      // Update existing code
       existingCode.code = code;
       existingCode.url = url || existingCode.url;
       existingCode.updatedAt = new Date();
+      
+      if (!existingCode.isTemporary || !isTemporary) {
+        existingCode.isTemporary = isTemporary;
+        existingCode.expiresAt = expiresAt || null;
+      }
       
       const updatedCode = await existingCode.save();
       
@@ -117,6 +128,8 @@ export const saveCodeToDB = async (codeData: SaveCodeData): Promise<SaveCodeResp
         data: {
           id: updatedCode.id,
           url: updatedCode.url,
+          isTemporary: updatedCode.isTemporary,
+          expiresAt: updatedCode.expiresAt,
           updatedAt: updatedCode.updatedAt
         }
       };
@@ -125,7 +138,9 @@ export const saveCodeToDB = async (codeData: SaveCodeData): Promise<SaveCodeResp
       const newCode = new Code({
         id,
         code,
-        url: url || null
+        url: url || null,
+        isTemporary,
+        expiresAt: isTemporary ? (expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000)) : null // 24 hours for temporary
       });
       
       const savedCode = await newCode.save();
@@ -136,6 +151,8 @@ export const saveCodeToDB = async (codeData: SaveCodeData): Promise<SaveCodeResp
         data: {
           id: savedCode.id,
           url: savedCode.url,
+          isTemporary: savedCode.isTemporary,
+          expiresAt: savedCode.expiresAt,
           createdAt: savedCode.createdAt
         }
       };
@@ -194,19 +211,19 @@ export const getCodeFromDB = async (id: string): Promise<SaveCodeResponse> => {
         message: 'Code not found',
         error: 'No code found with the provided ID'
       };
-    }
-    
-    return {
-      success: true,
-      message: 'Code retrieved successfully',
-      data: {
-        id: codeDoc.id,
-        code: codeDoc.code,
-        url: codeDoc.url,
-        createdAt: codeDoc.createdAt,
-        updatedAt: codeDoc.updatedAt
-      }
-    };
+    }      return {
+        success: true,
+        message: 'Code retrieved successfully',
+        data: {
+          id: codeDoc.id,
+          code: codeDoc.code,
+          url: codeDoc.url,
+          isTemporary: codeDoc.isTemporary,
+          expiresAt: codeDoc.expiresAt,
+          createdAt: codeDoc.createdAt,
+          updatedAt: codeDoc.updatedAt
+        }
+      };
   } catch (error) {
     console.error('Error getting code from database:', error);
     

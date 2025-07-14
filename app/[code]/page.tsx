@@ -12,13 +12,10 @@ import SyntaxHighlighter from "react-syntax-highlighter"
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
 import { nanoid } from "nanoid"
 
-// Initialize socket connection with fallback and better error handling
 const getSocketUrl = () => {
   if (typeof window !== 'undefined') {
-    // In production, try to determine the socket URL
     const isProduction = window.location.hostname !== 'localhost'
     if (isProduction) {
-      // Use your deployed socket server URL or disable realtime features
       return process.env.NEXT_PUBLIC_SOCKET_URL || null
     }
   }
@@ -100,7 +97,80 @@ const ShareCodePage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 1 })
   const [isSocketConnected, setIsSocketConnected] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [lastAutoSave, setLastAutoSave] = useState<Date | null>(null)
+  const [isAutoSaving, setIsAutoSaving] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const lastSaveRef = useRef<string>("")
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const autoSaveCode = async (code: string, currentSessionId?: string) => {
+    if (!code.trim()) return
+
+    try {
+      setIsAutoSaving(true)
+      const compressedCode = LZString.compressToEncodedURIComponent(code)
+      
+      const response = await fetch('/api/autoSave', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          code: compressedCode,
+          sessionId: currentSessionId,
+          url: window.location.href
+        })
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        setSessionId(result.sessionId)
+        setLastAutoSave(new Date())
+        lastSaveRef.current = code
+        console.log('Code auto-saved successfully')
+      } else {
+        console.error('Auto-save failed:', result.message)
+      }
+    } catch (error) {
+      console.error('Auto-save error:', error)
+    } finally {
+      setIsAutoSaving(false)
+    }
+  }
+
+  // Throttled auto-save to prevent too many database writes
+  const throttledAutoSave = (code: string, currentSessionId: string) => {
+    // Only save if content has actually changed
+    if (code === lastSaveRef.current) return
+    
+    // Clear any pending save
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+    
+    // Set immediate saving status for UI feedback
+    setIsAutoSaving(true)
+    
+    // Save after a small delay to batch rapid changes
+    saveTimeoutRef.current = setTimeout(() => {
+      autoSaveCode(code, currentSessionId)
+    }, 300) // 300ms delay to batch rapid changes
+  }
+
+  // Generate or get session ID for current page
+  useEffect(() => {
+    const currentPath = window.location.pathname.substring(1)
+    if (currentPath && !sessionId) {
+      // Use current URL path as session ID if available
+      setSessionId(currentPath)
+    } else if (!currentPath && !sessionId) {
+      // Generate new session ID for new sessions
+      const newSessionId = `temp_${nanoid(12)}`
+      setSessionId(newSessionId)
+      // Update URL without page reload
+      window.history.replaceState(null, '', `/${newSessionId}`)
+    }
+  }, [sessionId])
 
   // Socket connection status management
   useEffect(() => {
@@ -199,7 +269,6 @@ const ShareCodePage: React.FC = () => {
       socket.emit("join", roomData)
     }
 
-    // Only join if socket is connected and we have the URL
     if (socket.connected && typeof window !== 'undefined') {
       handleSocketConnect()
     }
@@ -235,25 +304,35 @@ const ShareCodePage: React.FC = () => {
   const handleShare = async () => {
     try {
       const compressedCode = LZString.compressToEncodedURIComponent(sharedCode)
-      const shortId = nanoid(8)
-      const shortUrl = `${window.location.origin}/${shortId}`
+      let shareId = sessionId
+      let shortUrl = window.location.href
       
-      // First try to save to MongoDB (primary)
+      if (!sessionId || sessionId.startsWith('temp_')) {
+        shareId = nanoid(8)
+        shortUrl = `${window.location.origin}/${shareId}`
+      }
+      
       try {
         const mongoResponse = await fetch('/api/saveToDB', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            id: shortId, 
+            id: shareId, 
             code: compressedCode,
-            url: shortUrl
+            url: shortUrl,
+            isTemporary: false // Make it permanent
           })
         })
         
         const mongoResult = await mongoResponse.json()
         
         if (mongoResult.success) {
-          console.log('Code saved to MongoDB successfully')
+          console.log('Code saved permanently to MongoDB')
+          setSessionId(shareId)
+          
+          if (window.location.href !== shortUrl) {
+            window.history.replaceState(null, '', `/${shareId}`)
+          }
         } else {
           console.error('MongoDB save failed:', mongoResult.message)
           throw new Error('MongoDB save failed')
@@ -261,14 +340,13 @@ const ShareCodePage: React.FC = () => {
       } catch (mongoError) {
         console.error('MongoDB error:', mongoError)
         
-        // Fallback to original server
         const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
         if (serverUrl) {
           try {
             await fetch(`${serverUrl}/api/saveCode`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ id: shortId, code: compressedCode }),
+              body: JSON.stringify({ id: shareId, code: compressedCode }),
             })
             console.log('Code saved to fallback server')
           } catch (serverError) {
@@ -295,10 +373,25 @@ const ShareCodePage: React.FC = () => {
     }, 500),
   ).current
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      debouncedEmitCodeChange.cancel()
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
+  }, [debouncedEmitCodeChange])
+
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newCode = e.target.value
     setSharedCode(newCode)
     debouncedEmitCodeChange(newCode)
+    
+    if (sessionId && newCode.trim()) {
+      throttledAutoSave(newCode, sessionId)
+    }
+    
     const textarea = e.target
     const cursorIndex = textarea.selectionStart
     const textBeforeCursor = newCode.substring(0, cursorIndex)
@@ -306,6 +399,23 @@ const ShareCodePage: React.FC = () => {
     const currentLine = lines.length
     const currentColumn = lines[lines.length - 1].length + 1
     setCursorPosition({ line: currentLine, column: currentColumn })
+  }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    // Get the pasted content
+    const pastedText = e.clipboardData.getData('text')
+    
+    // If we have a session ID and there's content, save with throttling
+    if (sessionId && pastedText.trim()) {
+      // Use setTimeout to ensure the state is updated before saving
+      setTimeout(() => {
+        const textarea = e.target as HTMLTextAreaElement
+        const newCode = textarea.value
+        if (newCode.trim()) {
+          throttledAutoSave(newCode, sessionId)
+        }
+      }, 10)
+    }
   }
 
   const lines = (sharedCode || "").split("\n")
@@ -377,12 +487,34 @@ const ShareCodePage: React.FC = () => {
                 </div>
                 <div className="flex items-center text-gray-400 font-mono">
                   <Code className="h-5 w-5 mr-2 text-orange-500" />
-                  <span className="text-sm">
+                  <span className="text-sm mr-4">
                     {isSocketConnected ? 'REALTIME SYNC' : 'OFFLINE MODE'}
                   </span>
                   {isSocketConnected && (
-                    <div className="w-2 h-2 bg-green-500 rounded-full ml-2 animate-pulse"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-4 animate-pulse"></div>
                   )}
+                  
+                  {/* Auto-save status */}
+                  <div className="flex items-center text-sm">
+                    {isAutoSaving ? (
+                      <>
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></div>
+                        <span className="text-yellow-400">AUTO-SAVING...</span>
+                      </>
+                    ) : lastAutoSave ? (
+                      <>
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        <span className="text-green-400">
+                          SAVED {new Date(lastAutoSave).toLocaleTimeString()}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-2 h-2 bg-gray-500 rounded-full mr-2"></div>
+                        <span className="text-gray-400">NOT SAVED</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -412,6 +544,7 @@ const ShareCodePage: React.FC = () => {
                     className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-orange-500 resize-none focus:outline-none focus:ring-2 focus:ring-orange-500/50 p-4 pl-16"
                     value={sharedCode}
                     onChange={handleTextareaChange}
+                    onPaste={handlePaste}
                     onClick={handleCursorUpdate}
                     onKeyUp={handleCursorUpdate}
                     spellCheck="false"
@@ -436,16 +569,20 @@ const ShareCodePage: React.FC = () => {
                   <ul className="text-gray-400 text-sm font-mono space-y-2">
                     <li className="flex items-start">
                       <span className="text-orange-500 mr-2">■</span>
+                      Code is automatically saved as you type or paste (temporary 24hr storage with instant backup).
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-orange-500 mr-2">■</span>
                       Share URL with team members for realtime collaboration. All changes sync automatically across
                       connected devices.
                     </li>
                     <li className="flex items-start">
                       <span className="text-orange-500 mr-2">■</span>
-                      Use SHARE button to generate permanent code link.
+                      Use SHARE button to generate permanent code link with no expiration.
                     </li>
                     <li className="flex items-start">
                       <span className="text-orange-500 mr-2">■</span>
-                      Code is automatically saved  with persistent storage for backup and retrieval.
+                      Temporary saves are automatically converted to permanent when shared.
                     </li>
                   </ul>
                 </div>

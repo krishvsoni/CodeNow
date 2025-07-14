@@ -4,7 +4,7 @@ import { saveCodeToDB } from '@/lib/saveToDB';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, code, url } = body;
+    const { id, code, url, isTemporary = false } = body;
 
     if (!id || !code) {
       return NextResponse.json(
@@ -13,7 +13,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await saveCodeToDB({ id, code, url });
+    const result = await saveCodeToDB({ 
+      id, 
+      code, 
+      url, 
+      isTemporary,
+      expiresAt: isTemporary ? new Date(Date.now() + 24 * 60 * 60 * 1000) : undefined // 24 hours for temporary
+    });
 
     if (result.success) {
       return NextResponse.json(result, { status: 200 });
