@@ -12,7 +12,25 @@ import SyntaxHighlighter from "react-syntax-highlighter"
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs"
 import { nanoid } from "nanoid"
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL)
+// Initialize socket connection with fallback and better error handling
+const getSocketUrl = () => {
+  if (typeof window !== 'undefined') {
+    // In production, try to determine the socket URL
+    const isProduction = window.location.hostname !== 'localhost'
+    if (isProduction) {
+      // Use your deployed socket server URL or disable realtime features
+      return process.env.NEXT_PUBLIC_SOCKET_URL || null
+    }
+  }
+  return process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001'
+}
+
+const socketUrl = getSocketUrl()
+const socket = socketUrl ? io(socketUrl, {
+  transports: ['websocket', 'polling'],
+  timeout: 20000,
+  forceNew: true
+}) : null
 
 const UFO = ({ className }: { className?: string }) => (
   <motion.svg
@@ -81,14 +99,45 @@ const ShareCodePage: React.FC = () => {
   const [sharedCode, setSharedCode] = useState(initialCode || "")
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 1 })
+  const [isSocketConnected, setIsSocketConnected] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Socket connection status management
+  useEffect(() => {
+    if (!socket) return
+
+    const handleConnect = () => {
+      console.log('Socket connected')
+      setIsSocketConnected(true)
+    }
+    
+    const handleDisconnect = () => {
+      console.log('Socket disconnected')
+      setIsSocketConnected(false)
+    }
+    
+    const handleConnectError = (error: Error) => {
+      console.error('Socket connection error:', error)
+      setIsSocketConnected(false)
+      showToast('Connection error. Some features may not work.')
+    }
+
+    socket.on('connect', handleConnect)
+    socket.on('disconnect', handleDisconnect)
+    socket.on('connect_error', handleConnectError)
+
+    return () => {
+      socket.off('connect', handleConnect)
+      socket.off('disconnect', handleDisconnect)
+      socket.off('connect_error', handleConnectError)
+    }
+  }, [])
 
   useEffect(() => {
     const shortId = window.location.pathname.substring(1)
     if (shortId) {
       const fetchCode = async () => {
         try {
-          // Try to fetch from MongoDB first
           let response = await fetch(`/api/getFromDB/${shortId}`)
           let data = await response.json()
           
@@ -99,7 +148,6 @@ const ShareCodePage: React.FC = () => {
             return
           }
           
-          // Fallback to the original server endpoint
           response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/getCode/${shortId}`)
           if (response.ok) {
             data = await response.json()
@@ -123,28 +171,40 @@ const ShareCodePage: React.FC = () => {
     const handleCodeUpdate = (newCode: string) => setSharedCode(newCode || "")
     const handleMessage = (message: string) => console.log(message)
 
-    socket.on("codeUpdate", handleCodeUpdate)
-    socket.on("message", handleMessage)
+    if (socket) {
+      socket.on("codeUpdate", handleCodeUpdate)
+      socket.on("message", handleMessage)
+    }
 
     return () => {
-      socket.off("codeUpdate", handleCodeUpdate)
-      socket.off("message", handleMessage)
+      if (socket) {
+        socket.off("codeUpdate", handleCodeUpdate)
+        socket.off("message", handleMessage)
+      }
     }
   }, [])
 
   useEffect(() => {
+    if (!socket) return
+
     const handleSocketConnect = () => {
-      socket.emit("join", {
-        url: window.location.href,
+      const currentUrl = window.location.href
+      const roomData = {
+        url: currentUrl,
         currentCode: sharedCode || "",
-      })
+        timestamp: Date.now()
+      }
+      
+      console.log('Joining room with data:', roomData)
+      socket.emit("join", roomData)
+    }
+
+    // Only join if socket is connected and we have the URL
+    if (socket.connected && typeof window !== 'undefined') {
+      handleSocketConnect()
     }
 
     socket.on("connect", handleSocketConnect)
-
-    if (socket.connected && sharedCode) {
-      handleSocketConnect()
-    }
 
     return () => {
       socket.off("connect", handleSocketConnect)
@@ -178,30 +238,44 @@ const ShareCodePage: React.FC = () => {
       const shortId = nanoid(8)
       const shortUrl = `${window.location.origin}/${shortId}`
       
-      // Save to the existing server endpoint
-      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/saveCode`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: shortId, code: compressedCode }),
-      })
-      
-      // Also save to MongoDB using our new API route
-      const mongoResponse = await fetch('/api/saveToDB', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          id: shortId, 
-          code: compressedCode,
-          url: shortUrl
+      // First try to save to MongoDB (primary)
+      try {
+        const mongoResponse = await fetch('/api/saveToDB', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            id: shortId, 
+            code: compressedCode,
+            url: shortUrl
+          })
         })
-      })
-      
-      const mongoResult = await mongoResponse.json()
-      
-      if (mongoResult.success) {
-        console.log('')
-      } else {
-        console.error('')
+        
+        const mongoResult = await mongoResponse.json()
+        
+        if (mongoResult.success) {
+          console.log('Code saved to MongoDB successfully')
+        } else {
+          console.error('MongoDB save failed:', mongoResult.message)
+          throw new Error('MongoDB save failed')
+        }
+      } catch (mongoError) {
+        console.error('MongoDB error:', mongoError)
+        
+        // Fallback to original server
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
+        if (serverUrl) {
+          try {
+            await fetch(`${serverUrl}/api/saveCode`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: shortId, code: compressedCode }),
+            })
+            console.log('Code saved to fallback server')
+          } catch (serverError) {
+            console.error('Fallback server also failed:', serverError)
+            showToast("Warning: Code link created but may not persist")
+          }
+        }
       }
       
       await navigator.clipboard.writeText(shortUrl)
@@ -214,7 +288,9 @@ const ShareCodePage: React.FC = () => {
 
   const debouncedEmitCodeChange = useRef(
     debounce((newCode: string) => {
-      socket.emit("codeChange", { newCode, url: window.location.href })
+      if (socket) {
+        socket.emit("codeChange", { newCode, url: window.location.href })
+      }
       localStorage.setItem("sharedCode", newCode)
     }, 500),
   ).current
@@ -258,7 +334,7 @@ const ShareCodePage: React.FC = () => {
 
       <CyberpunkNavbar />
 
-      <div className="flex flex-col min-h-screen relative z-10">
+      <div className="flex flex-col min-h-screen mt-12 relative z-10">
         <main className="flex-1 p-4 md:p-6 overflow-hidden pt-20">
           <div className="w-full max-w-6xl mx-auto space-y-6">
             <motion.div
@@ -301,7 +377,12 @@ const ShareCodePage: React.FC = () => {
                 </div>
                 <div className="flex items-center text-gray-400 font-mono">
                   <Code className="h-5 w-5 mr-2 text-orange-500" />
-                  <span className="text-sm">REALTIME SYNC</span>
+                  <span className="text-sm">
+                    {isSocketConnected ? 'REALTIME SYNC' : 'OFFLINE MODE'}
+                  </span>
+                  {isSocketConnected && (
+                    <div className="w-2 h-2 bg-green-500 rounded-full ml-2 animate-pulse"></div>
+                  )}
                 </div>
               </div>
 
@@ -360,11 +441,11 @@ const ShareCodePage: React.FC = () => {
                     </li>
                     <li className="flex items-start">
                       <span className="text-orange-500 mr-2">■</span>
-                      Use SHARE button to generate permanent link and save to both server and MongoDB database simultaneously.
+                      Use SHARE button to generate permanent code link.
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">■</span>
-                      Code is automatically saved to MongoDB with persistent storage for backup and retrieval.
+                      <span className="text-orange-500 mr-2">■</span>
+                      Code is automatically saved  with persistent storage for backup and retrieval.
                     </li>
                   </ul>
                 </div>
